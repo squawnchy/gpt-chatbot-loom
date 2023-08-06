@@ -45,8 +45,7 @@ def run():
     def get_display_name(bot_or_text):
         if isinstance(bot_or_text, ChatBot) and bot_or_text.name:
             return bot_or_text.name + " - " + bot_or_text.description
-        else:
-            return bot_or_text
+        return bot_or_text
 
     # prompt the user to select a bot
     selection = prompt_user_for_choice(
@@ -68,7 +67,3 @@ def run():
     openai.api_key = os.getenv("OPENAI_API_KEY")
     # chat with the bot
     run_chat_ui(bot)
-
-
-if __name__ == "__main__":
-    run()

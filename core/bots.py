@@ -1,5 +1,6 @@
 """This module contains the ChatBot and ChatBotLoom classes."""
 import json
+from uuid import uuid4
 from jsonschema import validate
 from openai import ChatCompletion
 
@@ -22,14 +23,14 @@ class ChatBot:
     """A representation of a chatbot, with metadata and an entrypoint."""
 
     def __init__(self, name, description, entrypoint):
-        self.id = name.lower().replace(" ", "-")
+        self.identifier = uuid4().hex
         self.name = name
         self.description = description
         self.entrypoint = entrypoint
         self.message_history = [{"role": "system", "content": entrypoint}]
 
     def __repr__(self):
-        return f"<ChatBot id={self.id} name={self.name} description={self.description}>"
+        return f"<ChatBot id={self.identifier} name={self.name} description={self.description}>"
 
     def __str__(self):
         return f"{self.name} ({self.description})"
@@ -37,10 +38,10 @@ class ChatBot:
     def __eq__(self, other):
         if not isinstance(other, ChatBotLoom):
             return False
-        return self.id == other.id
+        return self.identifier == other.id
 
     def __hash__(self):
-        return hash(self.id)
+        return hash(self.identifier)
 
     def chat(self, message):
         """Sends a message to the chatbot and returns the response."""
@@ -78,7 +79,7 @@ class ChatBotLoom:
     def get_bot(self, bot_id):
         """Returns a bot with the given id, or None if no bot is found."""
         for bot in self.bots:
-            if bot.id == bot_id:
+            if bot.identifier == bot_id:
                 return bot
         return None
 
@@ -104,7 +105,7 @@ class ChatBotLoom:
             json.dump(
                 [
                     {
-                        "id": bot.id,
+                        "id": bot.identifier,
                         "name": bot.name,
                         "description": bot.description,
                         "entrypoint": bot.entrypoint,

@@ -1,14 +1,16 @@
 """The CLI for the chatbot loom."""
 import os
+import sys
 import openai
-from core import ChatBotLoom, ChatBot, Config, run_chat_ui
+import dotenv
+from core import ChatBotLoom, ChatBot, run_chat_ui
 
 
-def prompt_user_for_choice(prompt, choices):
+def prompt_user_for_choice(prompt, choices, to_display_text):
     """Prompts the user to select a choice from a list."""
     print(prompt)
     for i, choice in enumerate(choices):
-        print(f"{i + 1}. {choice}")
+        print(f"{i + 1}. {to_display_text(choice)}")
     while True:
         try:
             choice = int(input("Enter a number: "))
@@ -21,33 +23,52 @@ def prompt_user_for_choice(prompt, choices):
 
 def run():
     """Runs the CLI."""
-    config = Config()
-    openai.api_key = config.OPENAI_API_KEY
 
+    # load .env file from one directory up
+    dotenv_path = os.path.join(os.path.dirname(__file__), "../.env")
+    dotenv.load_dotenv(dotenv_path)
+    file_path = os.getenv("BOTS_FILE")
     loom = ChatBotLoom()
+
     # load bots from file if file exists
-    if os.path.exists(config.BOTS_FILE):
-        loom.load_bots_from_file(config.BOTS_FILE)
+    if os.path.exists(file_path):
+        loom.load_bots_from_file(file_path)
     else:
-        loom.save_bots_to_file(config.BOTS_FILE)
+        loom.save_bots_to_file(file_path)
 
     # create a choice list for the bot names
-    bot_names = [bot.name for bot in loom.bots]
-    bot_names.append("Create a new bot")
+    choices = []
+    for bot in loom.bots:
+        choices.append(bot)
+    choices.append("Create a new bot")
+
+    def get_display_name(bot_or_text):
+        if isinstance(bot_or_text, ChatBot) and bot_or_text.name:
+            return bot_or_text.name + " - " + bot_or_text.description
+        else:
+            return bot_or_text
 
     # prompt the user to select a bot
-    bot_name = prompt_user_for_choice(
-        "Select a bot to chat with or create a new bot", bot_names
+    selection = prompt_user_for_choice(
+        "Select a bot to chat with or create a new bot", choices, get_display_name
     )
 
     # if the user selected to create a new bot, prompt them for a name
-    if bot_name == "Create a new bot":
-        bot_name = input("Enter a name for your bot: ")
+    if selection == "Create a new bot":
+        selection = input("Enter a name for your bot: ")
         bot_description = input("Enter a description for your bot: ")
         bot_entrypoint = input("Enter a entrypoint for your bot: ")
-        bot = ChatBot(bot_name, bot_description, bot_entrypoint)
+        bot = ChatBot(selection, bot_description, bot_entrypoint)
+        loom.add_bot(bot)
+        loom.save_bots_to_file(file_path)
+        sys.exit(0)
     else:
-        bot = loom.get_bot(bot_name)
+        bot = loom.get_bot_by_name(selection.name)
 
+    openai.api_key = os.getenv("OPENAI_API_KEY")
     # chat with the bot
     run_chat_ui(bot)
+
+
+if __name__ == "__main__":
+    run()

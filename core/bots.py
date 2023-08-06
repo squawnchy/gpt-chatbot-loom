@@ -25,7 +25,8 @@ class ChatBot:
         self.id = name.lower().replace(" ", "-")
         self.name = name
         self.description = description
-        self.internal_message_history = [{"role": "system", "text": entrypoint}]
+        self.entrypoint = entrypoint
+        self.message_history = [{"role": "system", "content": entrypoint}]
 
     def __repr__(self):
         return f"<ChatBot id={self.id} name={self.name} description={self.description}>"
@@ -34,6 +35,8 @@ class ChatBot:
         return f"{self.name} ({self.description})"
 
     def __eq__(self, other):
+        if not isinstance(other, ChatBotLoom):
+            return False
         return self.id == other.id
 
     def __hash__(self):
@@ -41,26 +44,15 @@ class ChatBot:
 
     def chat(self, message):
         """Sends a message to the chatbot and returns the response."""
-        self.internal_message_history.append({"role": "user", "text": message})
+        self.message_history.append({"role": "user", "content": message})
+        print("messages", self.message_history)
         response = ChatCompletion.create(
-            engine="gpt-4",
-            prompt="\n".join(
-                [
-                    f"{message['role']}: {message['text']}"
-                    for message in self.internal_message_history
-                ]
-            ),
-            temperature=0.9,
-            max_tokens=150,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0.6,
-            stop=["\n"],
+            model="gpt-4",
+            messages=self.message_history,
         )
-        self.internal_message_history.append(
-            {"role": "chatbot", "text": response.choices[0].text}
-        )
-        return response.choices[0].text
+        response_message = response["choices"][0]["message"]["content"]
+        self.message_history.append({"role": "assistant", "content": response_message})
+        return response_message
 
 
 class ChatBotLoom:

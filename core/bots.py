@@ -1,6 +1,7 @@
 """This module contains the ChatBot and ChatBotLoom classes."""
 import json
 from jsonschema import validate
+from openai import ChatCompletion
 
 BOTS_SCHEMA = {
     "type": "array",
@@ -24,10 +25,10 @@ class ChatBot:
         self.id = id
         self.name = name
         self.description = description
-        self.entrypoint = entrypoint
+        self.internal_message_history = [{"role": "system", "text": entrypoint}]
 
     def __repr__(self):
-        return f"<ChatBot id={self.id} name={self.name} description={self.description} entrypoint={self.entrypoint}>"
+        return f"<ChatBot id={self.id} name={self.name} description={self.description}>"
 
     def __str__(self):
         return f"{self.name} ({self.description})"
@@ -37,6 +38,29 @@ class ChatBot:
 
     def __hash__(self):
         return hash(self.id)
+
+    def chat(self, message):
+        """Sends a message to the chatbot and returns the response."""
+        self.internal_message_history.append({"role": "user", "text": message})
+        response = ChatCompletion.create(
+            engine="gpt-4",
+            prompt="\n".join(
+                [
+                    f"{message['role']}: {message['text']}"
+                    for message in self.internal_message_history
+                ]
+            ),
+            temperature=0.9,
+            max_tokens=150,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0.6,
+            stop=["\n"],
+        )
+        self.internal_message_history.append(
+            {"role": "chatbot", "text": response.choices[0].text}
+        )
+        return response.choices[0].text
 
 
 class ChatBotLoom:

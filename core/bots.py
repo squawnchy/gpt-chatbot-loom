@@ -1,3 +1,4 @@
+"""This module contains the ChatBot and ChatBotLoom classes."""
 import json
 from jsonschema import validate
 
@@ -17,6 +18,8 @@ BOTS_SCHEMA = {
 
 
 class ChatBot:
+    """A representation of a chatbot, with metadata and an entrypoint."""
+
     def __init__(self, id, name, description, entrypoint):
         self.id = id
         self.name = name
@@ -37,6 +40,8 @@ class ChatBot:
 
 
 class ChatBotLoom:
+    """A collection of chatbots, their metadata and functions to load and save them."""
+
     def __init__(self, bots: list[ChatBot] = None):
         if bots is None:
             bots = []

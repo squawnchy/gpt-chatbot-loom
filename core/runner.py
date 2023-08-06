@@ -10,4 +10,14 @@ def run_chat_ui(bot: ChatBot):
     def chat(message, history):
         return bot.chat(message)
 
-    gr.ChatInterface(fn=chat).launch()
+    gr.ChatInterface(
+        fn=chat,
+        textbox=gr.Textbox(lines=5, placeholder="Type your message here..."),
+        retry_btn=None,
+        stop_btn=None,
+        undo_btn=None,
+        clear_btn=None,
+        title=bot.name,
+        description=bot.description,
+        chatbot=gr.Chatbot(height=500),
+    ).launch()

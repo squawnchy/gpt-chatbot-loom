@@ -31,7 +31,7 @@ You can do it the easy way by running the following script:
 
 The tool allows for the creation and usage of chatbots:
 
-- **Creating Chatbots** - Bot creation is currently done manually by depositing a JSON file, which has to follow a certain schema. The path to this file is determined by the "BOTS_FILE" environment variable. If no file is found, a standard bot file is automatically created.
+- **Creating Chatbots** - Bot creation is currently done manually by depositing a JSON file, which has to follow a certain schema. The path to this file is determined by the `BOTS_FILE` environment variable. If no file is found, a standard bot file is automatically created.
   The schema looks like this:
 
 ```
@@ -50,7 +50,7 @@ The tool allows for the creation and usage of chatbots:
 }
 ```
 
-- **Using Chatbots** - Chatbots are used via a web interface, where bots can be selected via tabs. To use the bots, an API key for OpenAI must be deposited via the "OPENAI_API_KEY" environment variable.
+- **Using Chatbots** - Chatbots are used via a web interface, where bots can be selected via tabs. To use the bots, an API key for OpenAI must be deposited via the `OPENAI_API_KEY` environment variable.
 
 ![Screenshot](/assets/screenshot_01.png)
 

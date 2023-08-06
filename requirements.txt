@@ -1,5 +1,6 @@
-gradio
-openai
-python-dotenv
-colorama
-pyfiglet
+colorama==0.4.6
+gradio==3.39.0
+gradio_client==0.3.0
+openai==0.27.8
+pyfiglet==0.8.post1
+python-dotenv==1.0.0

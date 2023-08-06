@@ -18,7 +18,7 @@ def create_chatbot_ui(bot: ChatBot):
         clear_btn=None,
         title=bot.name,
         description=bot.description,
-        chatbot=gr.Chatbot(height=480),
+        chatbot=gr.Chatbot(height=420),
     )
 
 

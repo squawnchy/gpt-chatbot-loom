@@ -21,8 +21,8 @@ BOTS_SCHEMA = {
 class ChatBot:
     """A representation of a chatbot, with metadata and an entrypoint."""
 
-    def __init__(self, id, name, description, entrypoint):
-        self.id = id
+    def __init__(self, name, description, entrypoint):
+        self.id = name.lower().replace(" ", "-")
         self.name = name
         self.description = description
         self.internal_message_history = [{"role": "system", "text": entrypoint}]
@@ -103,8 +103,7 @@ class ChatBotLoom:
             bots = json.load(bots_file)
         validate(instance=bots, schema=BOTS_SCHEMA)
         self.bots = [
-            ChatBot(bot["id"], bot["name"], bot["description"], bot["entrypoint"])
-            for bot in bots
+            ChatBot(bot["name"], bot["description"], bot["entrypoint"]) for bot in bots
         ]
 
     def save_bots_to_file(self, filename):

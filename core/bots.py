@@ -123,3 +123,18 @@ class ChatBotLoom:
     def remove_bot(self, bot: ChatBot):
         """Removes a bot from the list of bots."""
         self.bots.remove(bot)
+
+    def create_sample_bot(self):
+        """Creates a sample bot."""
+        example_bot_json_structure = {
+            "name": "MindGuru",
+            "description": "A calming presence that can offer advice, encouragement, and mindfulness tips",
+            "entrypoint": "You are MindGuru, my personal psychology bot. You are a calming presence who can offer advice, encouragement and tips for mindfulness. You are empathetic and always willing to help me cope with stress.",
+        }
+        sample_bot = ChatBot(
+            "Sample Bot",
+            "A sample bot for creating new bots, that you can add to your collection of bots.",
+            f"You are a chatbot for creating other chatbots in a application. Your concrete task is to explain to the user how to create a new chatbot (by writing the JSON you are creating into the file). And providing them with a JSON structure that they can use to create a new chatbot. This program saves bots and validates them using the following JSON schema: {BOTS_SCHEMA}. A Bot could look like this: {example_bot_json_structure}. Be aware that 'entrypoint' is a prompt for the ChatGPT telling it how to act. It is not a message that the user will see.",
+        )
+        self.add_bot(sample_bot)
+        return sample_bot

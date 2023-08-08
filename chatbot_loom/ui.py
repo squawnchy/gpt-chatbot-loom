@@ -18,7 +18,7 @@ def create_chatbot_ui(bot: ChatBot):
         stop_btn=None,
         title=bot.name,
         description=bot.description,
-        chatbot=gr.Chatbot(height=420),
+        chatbot=gr.Chatbot(height=400),
     )
 
     return chat_interface

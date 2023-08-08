@@ -24,7 +24,7 @@ python -m chatbot_loom
 You can do it the easy way by running the following script:
 
 ```bash
-./run_chatbot_loom.sh
+./run.sh
 ```
 
 ### Features

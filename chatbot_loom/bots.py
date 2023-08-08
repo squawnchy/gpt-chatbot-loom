@@ -161,7 +161,7 @@ class ChatBotLoom:
             f"It's not a message the user will see."
         )
 
-        sample_bot = ChatBot("Sample Bot", sample_bot_description, sample_bot_entrypoint)
+        sample_bot = ChatBot("Chatbot Loom", sample_bot_description, sample_bot_entrypoint)
 
         self.add_bot(sample_bot)
 

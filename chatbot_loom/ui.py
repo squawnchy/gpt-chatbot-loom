@@ -9,7 +9,6 @@ def create_chatbot_ui(bot: ChatBot):
     def chat(message, history):
         history = history or []
         response = bot.chat(message, history)
-        # history.append([message, response])
         return response
 
     chat_interface = gr.ChatInterface(

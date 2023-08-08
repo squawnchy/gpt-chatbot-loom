@@ -16,7 +16,6 @@ def create_chatbot_ui(bot: ChatBot):
         textbox=gr.Textbox(lines=5, placeholder="Type your message here..."),
         retry_btn=None,
         stop_btn=None,
-        undo_btn=None,
         title=bot.name,
         description=bot.description,
         chatbot=gr.Chatbot(height=420),

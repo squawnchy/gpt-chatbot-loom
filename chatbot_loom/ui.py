@@ -7,19 +7,23 @@ def create_chatbot_ui(bot: ChatBot):
     """Creates a UI for the given chatbot."""
 
     def chat(message, history):
-        return bot.chat(message)
+        history = history or []
+        response = bot.chat(message, history)
+        history.append([message, response])
+        return response
 
-    return gr.ChatInterface(
+    chat_interface = gr.ChatInterface(
         fn=chat,
         textbox=gr.Textbox(lines=5, placeholder="Type your message here..."),
         retry_btn=None,
         stop_btn=None,
         undo_btn=None,
-        clear_btn=None,
         title=bot.name,
         description=bot.description,
         chatbot=gr.Chatbot(height=420),
     )
+
+    return chat_interface
 
 
 def run_chat_ui(bot: ChatBot):

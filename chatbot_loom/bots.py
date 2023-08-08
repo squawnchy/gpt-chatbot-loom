@@ -29,7 +29,6 @@ class ChatBot:
         self.name = name
         self.description = description
         self.entrypoint = entrypoint
-        self.message_history = [{"role": "system", "content": entrypoint}]
 
     def __repr__(self):
         return f"<ChatBot id={self.identifier} name={self.name} description={self.description}>"
@@ -45,16 +44,24 @@ class ChatBot:
     def __hash__(self):
         return hash(self.identifier)
 
-    def chat(self, message):
+    def _initialize_chat(self):
+        """Initializes a chat with the chatbot."""
+        return [{"role": "system", "content": self.entrypoint}]
+
+    def chat(self, message, plain_history: list[list[str, str]]):
         """Sends a message to the chatbot and returns the response."""
-        self.message_history.append({"role": "user", "content": message})
-        print("messages", self.message_history)
+
+        message_history = self._initialize_chat()
+        for message_tuple in plain_history:
+            message_history.append({"role": "user", "content": message_tuple[0]})
+            message_history.append({"role": "system", "content": message_tuple[1]})
+        message_history.append({"role": "user", "content": message})
+
         response = ChatCompletion.create(
             model=CHAT_GPT_MODEL_ID,
-            messages=self.message_history,
+            messages=message_history,
         )
         response_message = response["choices"][0]["message"]["content"]
-        self.message_history.append({"role": "assistant", "content": response_message})
         return response_message
 
 

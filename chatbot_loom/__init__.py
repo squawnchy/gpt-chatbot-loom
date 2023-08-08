@@ -1,5 +1,5 @@
 """CLI for the project."""
-from .cli_ui_runner import run
+from .ui import run_chat_ui, run_tabbed_chat_ui
 
-__all__ = ["run"]
+__all__ = ["run_chat_ui", "run_tabbed_chat_ui"]
 __version__ = "0.1.0"

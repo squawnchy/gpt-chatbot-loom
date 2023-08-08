@@ -36,7 +36,7 @@ class ChatBot:
         return f"{self.name} ({self.description})"
 
     def __eq__(self, other):
-        if not isinstance(other, ChatBotLoom):
+        if not isinstance(other, ChatBot):
             return False
         return self.identifier == other.id
 
@@ -76,19 +76,20 @@ class ChatBotLoom:
     def __hash__(self):
         return hash(self.bots)
 
-    def get_bot(self, bot_id):
-        """Returns a bot with the given id, or None if no bot is found."""
+    def _find_bot(self, criteria, value):
+        """Helper method to find a bot based on a given criteria."""
         for bot in self.bots:
-            if bot.identifier == bot_id:
+            if getattr(bot, criteria) == value:
                 return bot
         return None
 
+    def get_bot(self, bot_id):
+        """Returns a bot with the given id, or None if no bot is found."""
+        return self._find_bot("identifier", bot_id)
+
     def get_bot_by_name(self, name):
         """Returns a bot with the given name, or None if no bot is found."""
-        for bot in self.bots:
-            if bot.name == name:
-                return bot
-        return None
+        return self._find_bot("name", name)
 
     def load_bots_from_file(self, filename):
         """Loads bots from a JSON file."""
@@ -125,16 +126,41 @@ class ChatBotLoom:
         self.bots.remove(bot)
 
     def create_sample_bot(self):
-        """Creates a sample bot."""
+        """
+        Creates a sample bot with a predefined structure 
+        and adds it to the bot collection.
+        """
+
         example_bot_json_structure = {
             "name": "MindGuru",
-            "description": "A calming presence that can offer advice, encouragement, and mindfulness tips",
-            "entrypoint": "You are MindGuru, my personal psychology bot. You are a calming presence who can offer advice, encouragement and tips for mindfulness. You are empathetic and always willing to help me cope with stress.",
+            "description": "A calming presence that can offer advice, encouragement, "
+            "and mindfulness tips",
+            "entrypoint": (
+                "You are MindGuru, my personal psychology bot. "
+                "You are a calming presence who can offer advice, encouragement, "
+                "and tips for mindfulness. You are empathetic and always willing to "
+                "help me cope with stress."
+            )
         }
-        sample_bot = ChatBot(
-            "Sample Bot",
-            "A sample bot for creating new bots, that you can add to your collection of bots.",
-            f"You are a chatbot for creating other chatbots in a application. Your concrete task is to explain to the user how to create a new chatbot (by writing the JSON you are creating into the file). And providing them with a JSON structure that they can use to create a new chatbot. This program saves bots and validates them using the following JSON schema: {BOTS_SCHEMA}. A Bot could look like this: {example_bot_json_structure}. Be aware that 'entrypoint' is a prompt for the ChatGPT telling it how to act. It is not a message that the user will see.",
+
+        sample_bot_description = (
+            "A sample bot for creating new bots, that you can add to your "
+            "collection of bots."
         )
+
+        sample_bot_entrypoint = (
+            f"You are a chatbot for creating other chatbots in an application. "
+            f"Your task is to explain to the user how to create a new chatbot by "
+            f"writing the JSON structure into the file. Provide them with a JSON "
+            f"structure they can use to create a new chatbot. This program saves bots "
+            f"and validates them using the following JSON schema: {BOTS_SCHEMA}. "
+            f"A bot could look like this: {example_bot_json_structure}. "
+            f"Note that 'entrypoint' is a prompt for ChatGPT telling it how to act. "
+            f"It's not a message the user will see."
+        )
+
+        sample_bot = ChatBot("Sample Bot", sample_bot_description, sample_bot_entrypoint)
+
         self.add_bot(sample_bot)
+
         return sample_bot

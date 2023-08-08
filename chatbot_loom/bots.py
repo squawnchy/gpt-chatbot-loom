@@ -18,6 +18,8 @@ BOTS_SCHEMA = {
     },
 }
 
+CHAT_GPT_MODEL_ID = "gpt-4"
+
 
 class ChatBot:
     """A representation of a chatbot, with metadata and an entrypoint."""
@@ -48,7 +50,7 @@ class ChatBot:
         self.message_history.append({"role": "user", "content": message})
         print("messages", self.message_history)
         response = ChatCompletion.create(
-            model="gpt-4",
+            model=CHAT_GPT_MODEL_ID,
             messages=self.message_history,
         )
         response_message = response["choices"][0]["message"]["content"]

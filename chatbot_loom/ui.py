@@ -29,6 +29,7 @@ def run_chat_ui(bot: ChatBot):
     chat_ui = create_chatbot_ui(bot)
     chat_ui.launch()
 
+
 def run_tabbed_chat_ui(loom: ChatBotLoom):
     """Runs the UI for the given chatbot."""
 
@@ -36,4 +37,4 @@ def run_tabbed_chat_ui(loom: ChatBotLoom):
     gr.TabbedInterface(
         interface_list=[create_chatbot_ui(bot) for bot in chatbots],
         tab_names=[bot.name for bot in chatbots],
-    ).launch()
+    ).launch(server_port=8967)
